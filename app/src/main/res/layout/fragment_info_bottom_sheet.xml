@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/off"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@color/brown"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/fruit_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_info" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/brown"
+            android:text="O que é o Busca Fruta?"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/brown"
+        android:text="Este aplicativo permite que você encontre árvores de frutas ao seu redor. Ao se aproximar de uma árvore, você receberá notificações sobre os tipos de frutas disponíveis. Com uma interface simples e intuitiva, você pode explorar diferentes frutas, conhecer suas épocas de colheita e os benefícios que cada uma oferece. Ele conecta você com a sua cidade, trazendo um olhar diferente para a rotina corrida. Ao buscar árvores de frutas que muitas vezes passam despercebidas, você pode colher frutas e redescobrir a natureza que está presente em sua vida diária. É uma oportunidade de reconectar-se com o meio ambiente e apreciar a beleza ao seu redor."
+        android:paddingTop="8dp"/>
+</LinearLayout>

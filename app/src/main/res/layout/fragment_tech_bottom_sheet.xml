@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/off"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="@color/brown" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/fruit_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_tech" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informação técnicas"
+            android:textColor="@color/brown"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="Neste projeto, utilizei Kotlin para desenvolver um aplicativo Android na arquitetura MVVM, aplicando princípios de Clean Architecture para garantir uma separação clara de responsabilidades e com as boas praticas do clean code. A escolha de StateFlow em vez de LiveData proporcionou um gerenciamento de estado reativo e eficiente.
+
+A integração com o Google Maps API permitiu aos usuários visualizar a localização de árvores frutíferas em um mapa interativo, enriquecendo a experiência. Usei ViewBinding para melhorar a segurança e legibilidade do código, e tambem implementei testes unitarios ao projeto.
+
+Essa combinação de tecnologias e práticas não apenas otimiza o processo de desenvolvimento, mas também cria uma interface amigável e intuitiva, resultando em uma experiência de usuário aprimorada. Também foi utilizada a modularizacao para criar um app com a versao simplificada para smartwatch, imagina que delicia você estar caminhando e recebe a notificacao que tem um pé de fruta bem do ladinho? Agora é possível!"
+        android:textColor="@color/brown" />
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="70dp"
+        android:paddingBottom="30dp"
+        android:text="Busca Fruta"
+        android:textColor="@color/brown"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_info"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/header"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/off"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="12dp">
+
+        <ImageView
+            android:id="@+id/icon_info"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/off"
+            android:contentDescription="Informação"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_info" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_fruits"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/card_info"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/off"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="12dp">
+
+        <ImageView
+            android:id="@+id/icon_fruits"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/off"
+            android:contentDescription="Encontrar Frutas"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_frutas" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_tech"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/card_fruits"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/off"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="12dp">
+
+        <ImageView
+            android:id="@+id/icon_tech"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/off"
+            android:contentDescription="Encontrar Frutas"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_tech" />
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
