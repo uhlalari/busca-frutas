@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/off"
@@ -30,20 +31,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informação técnicas"
+            android:text="Informações técnicas"
             android:textColor="@color/brown"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:text="Neste projeto, utilizei Kotlin para desenvolver um aplicativo Android na arquitetura MVVM, aplicando princípios de Clean Architecture para garantir uma separação clara de responsabilidades e com as boas praticas do clean code. A escolha de StateFlow em vez de LiveData proporcionou um gerenciamento de estado reativo e eficiente.
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-A integração com o Google Maps API permitiu aos usuários visualizar a localização de árvores frutíferas em um mapa interativo, enriquecendo a experiência. Usei ViewBinding para melhorar a segurança e legibilidade do código, e tambem implementei testes unitarios ao projeto.
-
-Essa combinação de tecnologias e práticas não apenas otimiza o processo de desenvolvimento, mas também cria uma interface amigável e intuitiva, resultando em uma experiência de usuário aprimorada. Também foi utilizada a modularizacao para criar um app com a versao simplificada para smartwatch, imagina que delicia você estar caminhando e recebe a notificacao que tem um pé de fruta bem do ladinho? Agora é possível!"
-        android:textColor="@color/brown" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:textColor="@color/brown"
+            android:text="O aplicativo BuscaFruta permite que os usuários localizem árvores frutíferas em um mapa interativo, utilizando a API do Google Maps. O app é projetado para filtrar e exibir as localizações de diferentes tipos de frutas, ajudando os usuários a encontrar rapidamente o que procuram. Além disso, o aplicativo utiliza geofencing para enviar notificações relevantes ao usuário.\n\nFuncionalidades Principais:\nVisualização de Mapa: Os usuários podem visualizar a localização das árvores frutíferas em um mapa interativo.\nFiltragem de Frutas: O usuário pode filtrar as árvores de frutas por nome, e a lista é atualizada dinamicamente.\nGeofencing: O aplicativo implementa geofences para monitorar a proximidade das frutas e enviar notificações quando o usuário se aproxima delas.\nPermissões: O app gerencia as permissões de localização e notificações, garantindo que o usuário tenha controle sobre os dados acessados.\n\nAspectos Técnicos e Estrutura:\nArquitetura: O app segue o padrão Clean Architecture, separando a lógica de apresentação, domínio e dados, o que facilita a manutenção e testabilidade do código.\nPadrão MVVM: O aplicativo utiliza o padrão MVVM, permitindo uma separação clara entre a lógica de negócios e a interface do usuário.\nViewModel: Utiliza o padrão ViewState com o ViewModel do Android, garantindo que o estado da interface do usuário seja mantido durante as mudanças de configuração.\nCoroutines e Flow: O uso de Coroutines e Flow permite a manipulação assíncrona dos dados, proporcionando uma experiência de usuário mais responsiva e fluida.\nUnit Tests: O app inclui testes unitários para o FruitTreeViewModel, assegurando que a lógica de filtragem e o estado inicial estejam funcionando conforme o esperado. Os testes utilizam a biblioteca JUnit e kotlinx.coroutines para simular comportamentos assíncronos.\nPrincípios de Clean Code: O código é estruturado seguindo as práticas do Clean Code, com ênfase na legibilidade e manutenibilidade. Os nomes de variáveis e métodos são descritivos, e a lógica é dividida em funções menores e coesas.\n\nConclusão:\nO BuscaFruta é um aplicativo bem estruturado e testado, que utiliza boas práticas de desenvolvimento para oferecer uma experiência rica e interativa aos usuários. A arquitetura e os padrões adotados facilitam a expansão e manutenção do aplicativo, enquanto os testes garantem a integridade da lógica implementada." />
+    </ScrollView>
 </LinearLayout>

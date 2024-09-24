@@ -37,10 +37,15 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/brown"
-        android:text="Este aplicativo permite que você encontre árvores de frutas ao seu redor. Ao se aproximar de uma árvore, você receberá notificações sobre os tipos de frutas disponíveis. Com uma interface simples e intuitiva, você pode explorar diferentes frutas, conhecer suas épocas de colheita e os benefícios que cada uma oferece. Ele conecta você com a sua cidade, trazendo um olhar diferente para a rotina corrida. Ao buscar árvores de frutas que muitas vezes passam despercebidas, você pode colher frutas e redescobrir a natureza que está presente em sua vida diária. É uma oportunidade de reconectar-se com o meio ambiente e apreciar a beleza ao seu redor."
-        android:paddingTop="8dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/brown"
+            android:paddingTop="8dp"
+            android:text="Este aplicativo permite que você encontre árvores de frutas ao seu redor.\n\nAo se aproximar de uma árvore, você receberá notificações sobre os tipos de frutas disponíveis. Com uma interface simples e intuitiva, você pode explorar diferentes frutas, conhecer suas épocas de colheita e os benefícios que cada uma oferece.\n\nEle conecta você com a sua cidade, trazendo um olhar diferente para a rotina corrida. Ao buscar árvores de frutas que muitas vezes passam despercebidas, você pode colher frutas e redescobrir a natureza que está presente em sua vida diária.\n\nÉ uma oportunidade de reconectar-se com o meio ambiente e apreciar a beleza ao seu redor. Desperte o explorador que existe em você, revitalize suas caminhadas e experimente a alegria de descobrir a natureza oculta na sua própria cidade.\n\nCom BuscaFruta, cada árvore é um convite à aventura e à saúde. Prepare-se para colher mais do que apenas frutas; colecione memórias e momentos que enriquecerão sua vida!\n\nE não para por aí! BuscaFruta também tem uma versão otimizada para smartwatches, permitindo que você descubra árvores frutíferas mesmo sem estar com o celular nas mãos. Com notificações discretas no seu pulso, você poderá explorar sua cidade de maneira mais dinâmica e prática, enquanto se mantém atento ao ambiente ao seu redor.\n\nÉ uma experiência verdadeiramente hands-free, perfeita para quem gosta de se aventurar enquanto caminha, corre ou anda de bicicleta. Este aplicativo não apenas conecta você às frutas da sua região, mas também o convida a se reconectar com a natureza.\n\nEm um mundo onde a correria muitas vezes nos faz passar despercebidos, BuscaFruta é uma oportunidade de desacelerar, colher frutas frescas e apreciar a beleza da vida natural que nos cerca."/>
+    </ScrollView>
 </LinearLayout>
