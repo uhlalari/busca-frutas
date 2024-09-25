@@ -1,8 +1,12 @@
 package com.example.buscafruta.presentation.activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.BuscaFruta.R
@@ -17,6 +21,7 @@ class FruitSelectionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFruitSelectionBinding
     private val viewModel: FruitTreeViewModel by viewModels()
+    private val notificationReceiver = NotificationReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +29,12 @@ class FruitSelectionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupListeners()
+        registerReceiver(notificationReceiver, IntentFilter("com.example.buscafruta.NOTIFICATION"))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(notificationReceiver)
     }
 
     private fun setupListeners() {
@@ -78,5 +89,17 @@ class FruitSelectionActivity : AppCompatActivity() {
         "Abacate" -> R.drawable.ic_abacate
         "Jabuticaba" -> R.drawable.ic_jabuticaba
         else -> R.drawable.capa
+    }
+
+    private inner class NotificationReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.getStringExtra("message")?.let { message ->
+                showNotification(context, message)
+            }
+        }
+
+        private fun showNotification(context: Context?, message: String) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
     }
 }

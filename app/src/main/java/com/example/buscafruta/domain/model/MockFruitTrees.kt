@@ -16,7 +16,8 @@ object MockFruitTrees {
             LatLng(-19.85576, -43.96234),
             LatLng(-19.85553, -43.96835),
             LatLng(-19.87592, -44.03361),
-            LatLng(-20.11299, -43.60737)
+            LatLng(-19.8745235,-43.9218856)
+
         ),
         epocaDoAno = listOf("Setembro", "Outubro", "Novembro")
     )

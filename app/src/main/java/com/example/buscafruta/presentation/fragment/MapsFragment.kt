@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.BuscaFruta.R
 import com.example.buscafruta.domain.model.FruitTree
-import com.example.buscafruta.geofencing.GeofenceHelper
+import com.example.buscafruta.presentation.geofencing.GeofenceHelper
 import com.example.buscafruta.presentation.viewmodel.FruitTreeViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -75,14 +75,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addGeofencesForFruitTree(fruitTree: FruitTree) {
-        val fruitData =
-            mapOf(fruitTree.nome to fruitTree.localizacoes.map { Pair(it.latitude, it.longitude) })
+        val fruitData = mapOf(fruitTree.nome to fruitTree.localizacoes.map { Pair(it.latitude, it.longitude) })
         geofenceHelper.addGeofences(fruitData, 3000f,
             onSuccess = {
-
             },
-            onFailure = {
-
+            onFailure = { errorMessage ->
             }
         )
     }
@@ -96,8 +93,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         val mockLatLng = LatLng(mockLocation.latitude, mockLocation.longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(mockLatLng, 15f))
-
-
     }
 
     private fun checkLocationPermissions(): Boolean {
@@ -128,8 +123,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     ) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                observeFruitTrees()
-            } else {
+                onMapReady(map)
             }
         }
     }

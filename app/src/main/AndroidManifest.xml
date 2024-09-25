@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissões de acesso à localização -->
+    <!-- Permissões de acesso à localização e notificações -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
 
     <application
         android:allowBackup="true"
@@ -24,7 +23,7 @@
         <!-- Meta-dados para a API do Google Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDJdw4Flr7wA_KXAm6b9DxbYYOpMEAaLbc"/>
+            android:value="YOUR_GOOGLE_MAPS_API_KEY"/>
 
         <!-- Declaração das Activities -->
         <activity
@@ -44,6 +43,22 @@
             </intent-filter>
         </activity>
 
+        <!-- Declaração dos BroadcastReceivers -->
+        <!-- Receiver para Geofencing -->
+        <receiver
+            android:name="com.example.buscafruta.presentation.geofencing.GeofenceBroadcastReceiver"
+            android:exported="true"
+            android:permission="android.permission.ACCESS_FINE_LOCATION">
+            <intent-filter>
+                <action android:name="com.google.android.gms.location.GeofencingEvent" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Receiver para Notificações (Diárias e Geofencing) -->
+        <receiver
+            android:name="com.example.buscafruta.presentation.geofencing.NotificationReceiver"
+            android:exported="false" />
+        
 
     </application>
 
