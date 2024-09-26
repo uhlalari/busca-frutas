@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat.WearableExtender
 import com.example.BuscaFruta.R
 import com.example.buscafruta.presentation.activity.MapsActivity
 
@@ -27,6 +29,7 @@ class NotificationHelper {
 
         val mapIntent = Intent(context, MapsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("fruitName", fruitName)
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -46,9 +49,10 @@ class NotificationHelper {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
+            .extend(WearableExtender())
             .build()
 
-        notificationManager.notify(1, notification)
+        NotificationManagerCompat.from(context).notify(1, notification)
     }
 
     fun getFruitIconResource(fruitName: String): Int = when (fruitName) {

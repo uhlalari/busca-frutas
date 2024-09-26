@@ -12,6 +12,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
+import android.view.View
+import android.widget.ImageButton
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -21,15 +23,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        // Inicializar o fragmento do mapa
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        val buttonBack: ImageButton = findViewById(R.id.button_back)
+        buttonBack.setOnClickListener {
+            finish()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // Adicionar marcadores de frutas do MockFruitTrees
         for (fruitTree in MockFruitTrees.allFruitTrees) {
             for (location in fruitTree.localizacoes) {
                 val markerIcon = BitmapFactory.decodeResource(resources, fruitTree.icone)
@@ -44,7 +49,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        // Mover a câmera para a localização da primeira fruta
         val initialLocation = MockFruitTrees.allFruitTrees.first().localizacoes.first()
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, 10f))
     }
