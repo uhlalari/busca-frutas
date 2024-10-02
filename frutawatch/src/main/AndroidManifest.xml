@@ -3,9 +3,10 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -28,6 +29,7 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
+        <!-- Atividades do app -->
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
@@ -42,5 +44,12 @@
             android:name=".presentation.MapsActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <!-- BroadcastReceiver para escutar eventos de Geofencing -->
+        <receiver android:name=".presentation.GeofenceBroadcastReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.location.GeofenceEvent" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

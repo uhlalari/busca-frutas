@@ -6,5 +6,6 @@ data class FruitTree(
     val nome: String,
     val descricao: String,
     val localizacoes: List<LatLng>,
-    val epocaDoAno: List<String>
+    val epocaDoAno: List<String>,
+    val icone: Int
 )

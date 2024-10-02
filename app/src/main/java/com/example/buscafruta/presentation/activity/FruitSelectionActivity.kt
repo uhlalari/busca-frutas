@@ -46,7 +46,7 @@ class FruitSelectionActivity : AppCompatActivity() {
             binding.iconAmora to MockFruitTrees.amora,
             binding.iconManga to MockFruitTrees.manga,
             binding.iconPitanga to MockFruitTrees.pitanga,
-            binding.iconRoma to MockFruitTrees.roma,
+            binding.iconRoma to MockFruitTrees.romã,
             binding.iconAbacate to MockFruitTrees.abacate,
             binding.iconJabuticaba to MockFruitTrees.jabuticaba
         ).forEach { (iconView, fruit) ->

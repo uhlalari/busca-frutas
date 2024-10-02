@@ -1,18 +1,25 @@
 package com.example.buscafruta.presentation.activity
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.example.BuscaFruta.R
 import com.example.BuscaFruta.databinding.ActivityMainBinding
 import com.example.buscafruta.presentation.fragment.InfoBottomSheet
 import com.example.buscafruta.presentation.fragment.TechBottomSheet
-import com.example.buscafruta.presentation.geofencing.NotificationHelper
 import com.example.buscafruta.presentation.viewmodel.FruitTreeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -65,8 +72,8 @@ class MainActivity : AppCompatActivity() {
 
                     if (nearbyFruits.isNotEmpty()) {
                         val fruitName = nearbyFruits[0].nome
-                        val fruitIcon = NotificationHelper().getFruitIconResource(fruitName)
-                        NotificationHelper().showNotification(this, fruitName, fruitIcon)
+                        val fruitIcon = getFruitIconResource(fruitName)
+                        showNotification(fruitName, fruitIcon)
                     }
                 }
             }.addOnFailureListener { exception ->
@@ -99,5 +106,56 @@ class MainActivity : AppCompatActivity() {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
+    }
+
+    private fun getFruitIconResource(fruitName: String): Int = when (fruitName) {
+        "Amora" -> R.drawable.ic_amora
+        "Manga" -> R.drawable.ic_manga
+        "Pitanga" -> R.drawable.ic_pitanga
+        "Romã" -> R.drawable.ic_roma
+        "Abacate" -> R.drawable.ic_abacate
+        "Jabuticaba" -> R.drawable.ic_jabuticaba
+        else -> R.drawable.ic_frutas
+    }
+
+    private fun showNotification(fruitName: String, fruitIcon: Int) {
+        val channelId = "fruit_notification_channel"
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Cria o canal de notificação se o Android for Oreo ou superior
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                "Notificações de Frutas",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val mapIntent = Intent(this, MapsActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("fruitName", fruitName)
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            mapIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+
+        val notificationTitle = "Hmm, tem $fruitName perto de você!"
+        val notificationDescription = "Clique para ver no mapa."
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(fruitIcon)
+            .setContentTitle(notificationTitle)
+            .setContentText(notificationDescription)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        NotificationManagerCompat.from(this).notify(fruitName.hashCode(), notification)
     }
 }

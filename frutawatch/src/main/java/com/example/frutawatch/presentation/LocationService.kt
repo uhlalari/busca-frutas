@@ -1,66 +1,83 @@
 package com.example.frutawatch.presentation
 
+import android.Manifest
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.IBinder
-import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.example.frutawatch.model.MockFruitTrees
-import com.google.android.gms.location.*
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 
 class LocationService : Service() {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
+    private lateinit var geofencingClient: GeofencingClient
 
     override fun onCreate() {
         super.onCreate()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        startLocationUpdates()
-    }
+        geofencingClient = LocationServices.getGeofencingClient(this)
 
-    private fun startLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
-        } else {
-            stopSelf()
+        // Verifica se a permissão foi concedida antes de adicionar geofences
+        if (hasLocationPermission()) {
+            addGeofencesForFruitTrees()
         }
     }
 
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val location = locationResult.lastLocation ?: return
-            checkProximityToFruitTree(location)
-        }
+    private fun hasLocationPermission(): Boolean {
+        // Verifica se as permissões necessárias foram concedidas
+        val fineLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        val backgroundLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+
+        return fineLocationPermission == PackageManager.PERMISSION_GRANTED && backgroundLocationPermission == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun checkProximityToFruitTree(currentLocation: Location) {
+    private fun addGeofencesForFruitTrees() {
+        val geofenceList = mutableListOf<Geofence>()
+
         for (fruitTree in MockFruitTrees.allFruitTrees) {
             for (location in fruitTree.localizacoes) {
-                val fruitTreeLocation = Location("").apply {
-                    latitude = location.latitude
-                    longitude = location.longitude
-                }
-                val distance = currentLocation.distanceTo(fruitTreeLocation)
+                geofenceList.add(
+                    Geofence.Builder()
+                        .setRequestId(fruitTree.nome) // O ID pode ser o nome da árvore
+                        .setCircularRegion(
+                            location.latitude,
+                            location.longitude,
+                            1000f  // Raio de 1km
+                        )
+                        .setExpirationDuration(Geofence.NEVER_EXPIRE)  // O geofence não expira
+                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                        .build()
+                )
+            }
+        }
 
-                if (distance <= 1500) {
-                    NotificationHelperWatch(this@LocationService).triggerNotification(fruitTree)
-                    return
+        val geofencingRequest = GeofencingRequest.Builder()
+            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            .addGeofences(geofenceList)
+            .build()
+
+        // PendingIntent para o BroadcastReceiver
+        val geofencePendingIntent = PendingIntent.getBroadcast(
+            this, 0, Intent(this, GeofenceBroadcastReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        try {
+            // Adiciona os geofences se as permissões foram concedidas
+            geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
+                addOnSuccessListener {
+                    // Geofences adicionados com sucesso
+                }
+                addOnFailureListener {
+                    // Falha ao adicionar geofences
                 }
             }
+        } catch (e: SecurityException) {
+            // Tratamento do caso em que as permissões não foram concedidas
+            e.printStackTrace()
         }
     }
 

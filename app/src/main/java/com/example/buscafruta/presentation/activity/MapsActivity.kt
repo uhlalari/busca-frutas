@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import com.example.BuscaFruta.R
 import com.example.BuscaFruta.databinding.ActivityMapsBinding
 import com.example.buscafruta.domain.model.FruitTree
-import com.example.buscafruta.presentation.geofencing.NotificationReceiver
+import com.example.buscafruta.presentation.geofencing.NotificationHelper
 import com.example.buscafruta.presentation.viewmodel.FruitTreeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -89,9 +89,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.clear()
         val boundsBuilder = LatLngBounds.Builder()
 
+        val notificationHelper = NotificationHelper()
+
         fruitTrees.forEach { fruitTree ->
             fruitTree.localizacoes.forEach { location ->
-                val icon = getFruitIconResource(fruitTree.nome)
+                val icon = notificationHelper.getFruitIconResource(fruitTree.nome)
                 val resizedBitmap = Bitmap.createScaledBitmap(
                     BitmapFactory.decodeResource(resources, icon), 100, 100, false
                 )
@@ -128,16 +130,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_NOTIFICATION_PERMISSION_CODE)
         }
-    }
-
-    private fun getFruitIconResource(fruitName: String): Int = when (fruitName) {
-        "Amora" -> R.drawable.ic_amora
-        "Manga" -> R.drawable.ic_manga
-        "Pitanga" -> R.drawable.ic_pitanga
-        "Romã" -> R.drawable.ic_roma
-        "Abacate" -> R.drawable.ic_abacate
-        "Jabuticaba" -> R.drawable.ic_jabuticaba
-        else -> R.drawable.capa
     }
 
     companion object {

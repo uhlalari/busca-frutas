@@ -9,4 +9,8 @@ class FruitTreeRepositoryImpl : FruitTreeRepository {
     override suspend fun getAllFruitTrees(): List<FruitTree> {
         return MockFruitTrees.allFruitTrees
     }
+
+    override suspend fun getFruitByName(fruitName: String): FruitTree? {
+        return MockFruitTrees.allFruitTrees.find { it.nome.equals(fruitName, ignoreCase = true) }
+    }
 }

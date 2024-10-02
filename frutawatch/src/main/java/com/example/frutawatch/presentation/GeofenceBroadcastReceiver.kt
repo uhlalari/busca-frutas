@@ -3,50 +3,35 @@ package com.example.frutawatch.presentation
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.location.Location
-import com.example.frutawatch.model.FruitTree
-import com.example.frutawatch.model.MockFruitTrees
+import android.util.Log
+import com.example.frutawatch.NotificationHelperWatch
+import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
-import com.google.android.gms.maps.model.LatLng
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val geofencingEvent = GeofencingEvent.fromIntent(intent)
+        val geofencingEvent = GeofencingEvent.fromIntent(intent) ?: return
 
-        if (geofencingEvent == null || geofencingEvent.hasError()) {
+        if (geofencingEvent.hasError()) {
+            Log.e("GeofenceBroadcastReceiver", "Geofence error: ${geofencingEvent.errorCode}")
             return
         }
 
-        val location = geofencingEvent.triggeringLocation ?: return
+        // Verifica o tipo de transição do Geofence
+        val geofenceTransition = geofencingEvent.geofenceTransition
 
-        val nearbyFruits = getNearbyFruits(location)
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+            // Notifica quando o usuário entra no raio de uma árvore frutífera
+            val triggeringGeofences = geofencingEvent.triggeringGeofences
 
-        val closestFruit = nearbyFruits.minByOrNull { fruit ->
-            val fruitLocation = fruit.localizacoes.first()
-            val fruitLatLng = LatLng(fruitLocation.latitude, fruitLocation.longitude)
-            distanceBetween(location.latitude, location.longitude, fruitLatLng.latitude, fruitLatLng.longitude)
-        }
-
-        closestFruit?.let {
-            NotificationHelperWatch(context).triggerNotification(it)
-        }
-    }
-
-    private fun getNearbyFruits(location: Location): List<FruitTree> {
-        return MockFruitTrees.allFruitTrees.filter { fruit ->
-            fruit.localizacoes.any { fruitLocation ->
-                val fruitLatLng = LatLng(fruitLocation.latitude, fruitLocation.longitude)
-                distanceBetween(location.latitude, location.longitude, fruitLatLng.latitude, fruitLatLng.longitude) <= 1000 // 1 km
+            // Verifica se a lista de geofences acionados não é nula
+            if (!triggeringGeofences.isNullOrEmpty()) {
+                for (geofence in triggeringGeofences) {
+                    // Enviar notificação para a árvore correspondente
+                    NotificationHelperWatch(context).triggerNotificationByGeofence(geofence.requestId)
+                }
             }
         }
-    }
-
-    private fun distanceBetween(
-        startLat: Double, startLng: Double, endLat: Double, endLng: Double
-    ): Float {
-        val results = FloatArray(1)
-        Location.distanceBetween(startLat, startLng, endLat, endLng, results)
-        return results[0]
     }
 }

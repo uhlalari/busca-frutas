@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.NotificationCompat.WearableExtender
 import com.example.BuscaFruta.R
 import com.example.buscafruta.presentation.activity.MapsActivity
 
@@ -49,7 +48,6 @@ class NotificationHelper {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .extend(WearableExtender())
             .build()
 
         NotificationManagerCompat.from(context).notify(1, notification)

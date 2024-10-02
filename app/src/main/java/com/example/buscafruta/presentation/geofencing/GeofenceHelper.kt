@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
@@ -53,27 +52,20 @@ class GeofenceHelper(private val context: Context) {
             .addGeofences(geofences)
             .build()
 
-        geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
-            addOnSuccessListener {
-                Log.d("GeofenceHelper", "Geofences added successfully")
-                onSuccess()
+        try {
+            geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
+                addOnSuccessListener {
+                    Log.d("GeofenceHelper", "Geofences added successfully")
+                    onSuccess()
+                }
+                addOnFailureListener { e ->
+                    val errorMessage = e.localizedMessage ?: "Geofence addition failed"
+                    Log.e("GeofenceHelper", errorMessage)
+                    onFailure(errorMessage)
+                }
             }
-            addOnFailureListener { e ->
-                val errorMessage = e.localizedMessage ?: "Geofence addition failed"
-                Log.e("GeofenceHelper", errorMessage)
-                onFailure(errorMessage)
-            }
-        }
-    }
-
-    companion object {
-        fun getErrorString(errorCode: Int): String {
-            return when (errorCode) {
-                GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> "Geofence service is not available now."
-                GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> "Too many geofences"
-                GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> "Too many pending intents"
-                else -> "Unknown geofence error."
-            }
+        } catch (e: SecurityException) {
+            onFailure("Security exception: ${e.message}")
         }
     }
 }

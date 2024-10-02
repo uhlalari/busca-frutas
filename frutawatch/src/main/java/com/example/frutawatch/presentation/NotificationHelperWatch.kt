@@ -1,4 +1,4 @@
-package com.example.frutawatch.presentation
+package com.example.frutawatch
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,8 +8,9 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.example.frutawatch.R
 import com.example.frutawatch.model.FruitTree
+import com.example.frutawatch.model.MockFruitTrees
+import com.example.frutawatch.presentation.MapsActivity
 import com.google.android.gms.maps.model.LatLng
 
 class NotificationHelperWatch(private val context: Context) {
@@ -30,14 +31,7 @@ class NotificationHelperWatch(private val context: Context) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = 1
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "fruits_channel",
-                "Fruits Notifications",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
+        createNotificationChannelIfNecessary(notificationManager)
 
         val notification = NotificationCompat.Builder(context, "fruits_channel")
             .setContentTitle("Hmm, tem ${fruit.nome} perto de você!")
@@ -49,5 +43,22 @@ class NotificationHelperWatch(private val context: Context) {
             .build()
 
         notificationManager.notify(notificationId, notification)
+    }
+
+    // Método para disparar notificação com base no ID do geofence
+    fun triggerNotificationByGeofence(requestId: String) {
+        val fruit = MockFruitTrees.allFruitTrees.firstOrNull { it.nome == requestId } ?: return
+        triggerNotification(fruit)
+    }
+
+    private fun createNotificationChannelIfNecessary(notificationManager: NotificationManager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "fruits_channel",
+                "Fruits Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }
