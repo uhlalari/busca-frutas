@@ -62,7 +62,10 @@ class LocationService : Service() {
 
         // PendingIntent para o BroadcastReceiver
         val geofencePendingIntent = PendingIntent.getBroadcast(
-            this, 0, Intent(this, GeofenceBroadcastReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+            this,
+            0,
+            Intent(this, GeofenceBroadcastReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         try {

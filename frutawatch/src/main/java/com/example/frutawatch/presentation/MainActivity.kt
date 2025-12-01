@@ -48,44 +48,54 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLocationPermissionAndProximity() {
-        if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-        } else {
-            try {
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    location?.let {
-                        val closestFruit = LocationUtils.getClosestFruit(it)
-                        closestFruit?.let { fruit ->
-                            notificationHelper.triggerNotification(fruit)
-                        }
+        if (!hasFineLocationPermission()) {
+            requestFineLocationPermission()
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !hasBackgroundLocationPermission()) {
+            requestBackgroundLocationPermission()
+            return
+        }
+
+        try {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val closestFruit = LocationUtils.getClosestFruit(it)
+                    closestFruit?.let { fruit ->
+                        notificationHelper.triggerNotification(fruit)
                     }
                 }
-            } catch (e: SecurityException) {
-                e.printStackTrace()  // Lida com exceção de segurança
             }
+        } catch (e: SecurityException) {
+            e.printStackTrace()  // Lida com exceção de segurança
         }
     }
 
-    private fun hasLocationPermission(): Boolean {
-        val fineLocationGranted = ContextCompat.checkSelfPermission(
+    private fun hasFineLocationPermission(): Boolean =
+        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+
+    private fun hasBackgroundLocationPermission(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+        } else true
+
+    private fun requestFineLocationPermission() {
+        ActivityCompat.requestPermissions(
             this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_LOCATION_PERMISSION_FINE
+        )
+    }
 
-        val backgroundLocationGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContextCompat.checkSelfPermission(
+    private fun requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(
                 this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true
+                arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                REQUEST_LOCATION_PERMISSION_BACKGROUND
+            )
         }
-
-        return fineLocationGranted && backgroundLocationGranted
     }
 
     override fun onRequestPermissionsResult(
@@ -94,11 +104,22 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        when (requestCode) {
+            REQUEST_LOCATION_PERMISSION_FINE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Após conceder fine, solicitar background se necessário
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !hasBackgroundLocationPermission()) {
+                        requestBackgroundLocationPermission()
+                    } else {
+                        checkLocationPermissionAndProximity()
+                    }
+                } else {
+                    // Permissão negada - não prosseguir
+                }
+            }
+            REQUEST_LOCATION_PERMISSION_BACKGROUND -> {
+                // Independentemente de concedido ou não, tentar seguir com a lógica
                 checkLocationPermissionAndProximity()
-            } else {
-                // Tratar o caso de permissão negada
             }
         }
     }
@@ -116,6 +137,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val REQUEST_LOCATION_PERMISSION = 1
+        private const val REQUEST_LOCATION_PERMISSION_FINE = 1
+        private const val REQUEST_LOCATION_PERMISSION_BACKGROUND = 2
     }
 }
