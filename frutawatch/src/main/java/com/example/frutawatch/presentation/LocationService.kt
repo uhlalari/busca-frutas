@@ -74,8 +74,9 @@ class LocationService : Service() {
                 addOnSuccessListener {
                     // Geofences adicionados com sucesso
                 }
-                addOnFailureListener {
+                addOnFailureListener { exception ->
                     // Falha ao adicionar geofences
+                    exception.printStackTrace()
                 }
             }
         } catch (e: SecurityException) {

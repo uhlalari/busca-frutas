@@ -28,14 +28,14 @@ class NotificationHelper {
 
         val mapIntent = Intent(context, MapsActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("fruitName", fruitName)
+            putExtra("filterFruit", fruitName)
         }
 
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
             mapIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notificationTitle = "Hmm, tem $fruitName perto de você!"

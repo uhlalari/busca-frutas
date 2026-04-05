@@ -7,10 +7,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.example.BuscaFruta.R
 import com.example.BuscaFruta.databinding.ActivityMapsBinding
 import com.example.buscafruta.domain.model.FruitTree
@@ -40,6 +43,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Definir cor da barra de status igual ao fundo do app
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.off, theme)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -76,11 +89,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun observeViewModel() {
-        val filterFruit = intent.getStringExtra("filterFruit") ?: "all"
+        val filterFruit = intent.getStringExtra("filterFruit")
+            ?: intent.getStringExtra("fruitName")
+            ?: "all"
 
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.getFilteredFruitTrees(filterFruit).collect { fruitTrees ->
-                displayMarkers(fruitTrees)
+                val treesToShow = if (fruitTrees.isEmpty() && !filterFruit.equals("all", ignoreCase = true)) {
+                    viewModel.getFilteredFruitTrees("all")
+                } else {
+                    null
+                }
+
+                if (treesToShow != null) {
+                    treesToShow.collect { allTrees ->
+                        displayMarkers(allTrees)
+                    }
+                } else {
+                    displayMarkers(fruitTrees)
+                }
             }
         }
     }
@@ -88,11 +115,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun displayMarkers(fruitTrees: List<FruitTree>) {
         mMap.clear()
         val boundsBuilder = LatLngBounds.Builder()
+        var hasAnyLocation = false
 
         val notificationHelper = NotificationHelper()
 
         fruitTrees.forEach { fruitTree ->
             fruitTree.localizacoes.forEach { location ->
+                hasAnyLocation = true
                 val icon = notificationHelper.getFruitIconResource(fruitTree.nome)
                 val resizedBitmap = Bitmap.createScaledBitmap(
                     BitmapFactory.decodeResource(resources, icon), 100, 100, false
@@ -108,8 +137,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        val bounds = boundsBuilder.build()
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+        if (hasAnyLocation) {
+            try {
+                val bounds = boundsBuilder.build()
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun checkLocationPermission(): Boolean =

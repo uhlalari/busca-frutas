@@ -25,34 +25,17 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             val triggeringGeofences = geofencingEvent.triggeringGeofences
             Log.d("GeofenceBroadcastReceiver", "Entering geofence: ${triggeringGeofences?.map { it.requestId }}")
 
-            val triggeringLocation = geofencingEvent.triggeringLocation
+            triggeringGeofences?.let { geofences ->
+                for (geofence in geofences) {
+                    val fruitName = geofence.requestId
+                    Log.d("GeofenceBroadcastReceiver", "Entering geofence for fruit: $fruitName")
 
-            if (triggeringLocation != null) {
-                triggeringGeofences?.let { geofences ->
-                    for (geofence in geofences) {
-                        val fruitName = geofence.requestId
-                        Log.d("GeofenceBroadcastReceiver", "Entering geofence for fruit: $fruitName")
-
-                        val geofenceLocation = Location("").apply {
-                            latitude = geofence.latitude
-                            longitude = geofence.longitude
-                        }
-
-                        val distance = triggeringLocation.distanceTo(geofenceLocation)
-
-                        if (distance <= 1500) {
-                            val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
-                                putExtra("fruitName", fruitName)
-                            }
-                            context.sendBroadcast(notificationIntent)
-                        } else {
-                            Log.d("GeofenceBroadcastReceiver", "Distância maior que 1.5 km para $fruitName")
-                        }
+                    val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
+                        putExtra("fruitName", fruitName)
                     }
-                } ?: Log.e("GeofenceBroadcastReceiver", "No geofences triggered")
-            } else {
-                Log.e("GeofenceBroadcastReceiver", "triggeringLocation é nulo")
-            }
+                    context.sendBroadcast(notificationIntent)
+                }
+            } ?: Log.e("GeofenceBroadcastReceiver", "No geofences triggered")
         }
     }
 }
